@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">juvo</string>
+    <string name="add_textbox_hint">Add a todo item</string>
+    <string name="add_button_text">Add</string>
+    <string name="mobile_services">Azure App Service</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="checkbox_text">Item Text</string>
+
+  <string name="prompt_email">Email</string>
+  <string name="prompt_password">Password</string>
+  <string name="action_sign_in">Login</string>
+  <string name="app_name">Juvo Home Friend</string>
+
+  <string name="hello">Juvo Home Friend</string>
+</resources>
