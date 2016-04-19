@@ -13,6 +13,18 @@ namespace juvo.JuvoClasses
         public string Password { get; set; }
     }
 
+    public class LogInResponse
+    {
+        [JsonProperty(PropertyName = "username")]
+        public string Email { get; set; }
+
+        [JsonProperty(PropertyName = "token")]
+        public string Token { get; set; }
+
+        [JsonProperty(PropertyName = "userid")]
+        public string UserId { get; set; }
+    }
+
     public class LogInItemWrapper : Java.Lang.Object
     {
         public LogInItemWrapper(LogInItem item)

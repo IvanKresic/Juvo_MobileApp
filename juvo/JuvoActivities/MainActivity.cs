@@ -4,13 +4,26 @@ using Android.Widget;
 using Android.OS;
 using Android.Util;
 using Gcm.Client;
+using Microsoft.WindowsAzure.MobileServices;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text;
+using juvo.JuvoClasses;
+using System.Net;
+using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
 
 namespace juvo.JuvoActivities
 {
     [Activity(Label = "Juvo Home Friend", MainLauncher = true, Icon = "@drawable/juvo")]
     public class MainActivity : Activity
     {
+
         public static MainActivity instance;
+        const string applicationURL = @"https://juvo.azurewebsites.net";
+        private static bool auth = false;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -32,17 +45,12 @@ namespace juvo.JuvoActivities
                 JuvoClasses.Constants.tag = emailView.Text;
                 try
                 {
-                    Authenticate(emailView.Text, passwd.Text);
+                    var temp = Authenticate(emailView.Text, passwd.Text);                    
                 }
                 catch
                 {
 
                 }
-                RegisterWithGCM();
-                var intent = new Intent(this, typeof(DangerEventsActivity));
-                StartActivity(intent);
-                Finish();
-
             };
 
         }
@@ -58,11 +66,31 @@ namespace juvo.JuvoActivities
             GcmClient.Register(this, JuvoClasses.Constants.SenderID);
         }
 
-        private void Authenticate(string usr, string pass)
+        private async Task Authenticate(string usr, string pass)
         {
+            var myClient = new MobileServiceClient(applicationURL);
+            var arguments = new Dictionary<string, string>
+            {
+                { "email", usr }, {"password", pass }
+            };
+            var calcResult = await myClient.InvokeApiAsync<LogInResponse>("/api/Auth", HttpMethod.Post, arguments);
+            if(calcResult != null)
+            {
+                RegisterWithGCM();
+                var intent = new Intent(this, typeof(DangerEventsActivity));
+                StartActivity(intent);
+                Finish();
+            }
+            else
+            {
+                Toast.MakeText(this, "Log In Failed!", ToastLength.Long).Show();
+            }
+
+            Log.Info("TAG", "Token:"+ calcResult.Token);
+            Log.Info("TAG", "User_Id:" + calcResult.UserId);
+            Log.Info("TAG", "Email:" + calcResult.Email);
 
         }
-
 
     }
 }
