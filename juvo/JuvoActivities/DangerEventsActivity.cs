@@ -9,6 +9,12 @@ using Microsoft.WindowsAzure.MobileServices.Sync;
 using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 using System.IO;
 using juvo.JuvoClasses;
+using System.Collections.Generic;
+using System.Threading;
+using System.Net.Http;
+using Android.Util;
+using Newtonsoft.Json;
+using juvo.JuvoModel;
 
 namespace juvo.JuvoActivities
 {
@@ -29,9 +35,12 @@ namespace juvo.JuvoActivities
         //EditText containing the "New ToDo" text
         private EditText textNewToDo;
 
-        const string applicationURL = @"https://juvo.azurewebsites.net";
+        const string applicationURL = @"https://juvohomefriend.azurewebsites.net/";
 
         const string localDbFilename = "localstore.db";
+
+        List<Response> response = new List<Response>();
+
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -47,6 +56,7 @@ namespace juvo.JuvoActivities
             // Create the Mobile Service Client instance, using the provided
             // Mobile Service URL
             client = new MobileServiceClient(applicationURL);
+            
             await InitLocalStoreAsync();
 
             // Get the Mobile Service sync table instance to use
@@ -77,7 +87,7 @@ namespace juvo.JuvoActivities
             }
 
             var store = new MobileServiceSQLiteStore(path);
-            store.DefineTable<DangerEvents>();
+            store.DefineTable<Response>();
 
             // Uses the default conflict handler, which fails on conflict
             // To use a different conflict handler, pass a parameter to InitializeAsync. For more details, see http://go.microsoft.com/fwlink/?LinkId=521416
@@ -109,16 +119,34 @@ namespace juvo.JuvoActivities
         
 
         private async Task SyncAsync(bool pullData = false)
-        {
-            // await historyTable.PullAsync("allDangerEvents", historyTable.CreateQuery());
-            //await client.SyncContext.PushAsync();
+        {        
+           response.Clear();
+            adapter.Clear();
+
             try
             {
-                await client.SyncContext.PushAsync();
-
                 if (pullData)
                 {
-                    await historyTable.PullAsync("allDangerEvents", historyTable.CreateQuery()); // query ID is used for incremental sync
+                    //*************httpRequest***************
+                    var mClient = new HttpClient();
+                    mClient.DefaultRequestHeaders.Add("X-ZUMO-AUTH", Constants.token);
+                    mClient.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
+
+                    var calcResult = await mClient.GetAsync(new Uri("http://juvohomefriend.azurewebsites.net/api/DangerEvents1/" + Constants.User_Id));
+                    var temp = await calcResult.Content.ReadAsStringAsync();
+                    //*******************************
+
+                    var res = JsonConvert.DeserializeObject<List<UsersModel>>(temp);
+                    foreach (DevicesModel d in res[0].devices)
+                    {
+                        foreach (DangerEventsModel events in d.DangerEvents)
+                        {
+                            Response response = new Response();
+                            response.Name = d.Name;
+                            response.Time = events.HappenedAt;
+                            adapter.Add(response);
+                        }
+                    }
                 }
             }
             catch (Java.Net.MalformedURLException)
@@ -127,7 +155,7 @@ namespace juvo.JuvoActivities
             }
             catch (Exception e)
             {
-                CreateAndShowDialog(e, "Jebaji ga burazeru");
+                CreateAndShowDialog(e, "Error occured!");
             }
         }
 
@@ -135,14 +163,12 @@ namespace juvo.JuvoActivities
         private async void OnRefreshItemsSelected()
         {
             await SyncAsync(pullData: true); // get changes from the mobile service
-            await RefreshItemsFromTableAsync(); // refresh view using local database
+            //await RefreshItemsFromTableAsync(); // refresh view using local database
         }
 
         //Refresh the list with the items in the local database
         private async Task RefreshItemsFromTableAsync()
-        {
-            
-
+        {           
             try
             {
                 // Get the items that weren't marked as completed and add them in the adapter
@@ -152,7 +178,7 @@ namespace juvo.JuvoActivities
 
                 adapter.Clear();
 
-                foreach (DangerEvents current in list)
+                foreach (Response current in response)
                     adapter.Add(current);
 
             }
@@ -214,7 +240,7 @@ namespace juvo.JuvoActivities
 
                // if (!item.Complete)
                // {
-                    adapter.Add(item);
+                  //  adapter.Add(item);
                // }
             }
             catch (Exception e)
@@ -239,6 +265,6 @@ namespace juvo.JuvoActivities
             builder.Create().Show();
         }
 
-
+        
     }
 }

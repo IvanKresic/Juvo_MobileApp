@@ -3,15 +3,16 @@ using Android.App;
 using Android.Views;
 using Android.Widget;
 using System.Collections.Generic;
+using juvo.JuvoModel;
 
 namespace juvo.JuvoClasses
 {
-    public class DangerEventsAdapter : BaseAdapter<DangerEvents>
+    public class DangerEventsAdapter : BaseAdapter<Response>
     {
 
         Activity activity;
         int layoutResourceId;
-        List<DangerEvents> items = new List<DangerEvents>();
+        List<Response> items = new List<Response>();
 
         public DangerEventsAdapter(Activity activity, int layoutResourceId)
         {
@@ -24,37 +25,25 @@ namespace juvo.JuvoClasses
         {
             var row = convertView;
             var currentItem = this[position];
-            CheckBox checkBox;
+            TextView textItem;
 
             if (row == null)
             {
                 var inflater = activity.LayoutInflater;
                 row = inflater.Inflate(layoutResourceId, parent, false);
 
-                checkBox = row.FindViewById<CheckBox>(Resource.Id.checkToDoItem);
-
-                checkBox.CheckedChange += async (sender, e) => {
-                    var cbSender = sender as CheckBox;
-                    if (cbSender != null && cbSender.Tag is HistoryItemWrapper && cbSender.Checked)
-                    {
-                        cbSender.Enabled = false;
-                        if (activity is JuvoActivities.DangerEventsActivity)
-                            await ((JuvoActivities.DangerEventsActivity)activity).CheckItem((cbSender.Tag as HistoryItemWrapper).HistoryItem);
-                    }
-                };
+                textItem = row.FindViewById<TextView>(Resource.Id.checkToDoItem);
             }
             else
-                checkBox = row.FindViewById<CheckBox>(Resource.Id.checkToDoItem);
+                textItem = row.FindViewById<TextView>(Resource.Id.checkToDoItem);
 
-            checkBox.Text = currentItem.HappenedAt;
-            checkBox.Checked = false;
-            checkBox.Enabled = true;
-            checkBox.Tag = new HistoryItemWrapper(currentItem);
-
+            textItem.Text = currentItem.Name + " - " + currentItem.Time;
             return row;
         }
 
-        public void Add(DangerEvents item)
+
+        #region For checkItems
+        public void Add(Response item)
         {
             items.Add(item);
             NotifyDataSetChanged();
@@ -66,14 +55,14 @@ namespace juvo.JuvoClasses
             NotifyDataSetChanged();
         }
 
-        public void Remove(DangerEvents item)
+        public void Remove(Response item)
         {
             items.Remove(item);
             NotifyDataSetChanged();
         }
+        #endregion
 
-
-        #region Implemented Abstract of BaseAdapter
+        #region Implementation of abstract 
         public override long GetItemId(int position)
         {
             return position;
@@ -87,7 +76,7 @@ namespace juvo.JuvoClasses
             }
         }
 
-        public override DangerEvents this[int position]
+        public override Response this[int position]
         {
             get
             {

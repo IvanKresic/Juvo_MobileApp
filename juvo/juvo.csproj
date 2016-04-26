@@ -87,12 +87,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JuvoActivities\DangerEventsActivity.cs" />
+    <Compile Include="JuvoActivities\LogInActivity.cs" />
     <Compile Include="JuvoActivities\MainActivity.cs" />
     <Compile Include="JuvoClasses\Constants.cs" />
     <Compile Include="JuvoClasses\DangerEvents.cs" />
     <Compile Include="JuvoClasses\DangerEventsAdapter.cs" />
     <Compile Include="JuvoClasses\LogInItem.cs" />
     <Compile Include="JuvoClasses\MyBroadcastReceiver.cs" />
+    <Compile Include="JuvoModel\DangerEventsModel.cs" />
+    <Compile Include="JuvoModel\DevicesModel.cs" />
+    <Compile Include="JuvoModel\Response.cs" />
+    <Compile Include="JuvoModel\UsersModel.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToDoActivity.cs" />
@@ -107,6 +112,9 @@
     <None Include="Properties\AndroidManifest.xml" />
     <AndroidResource Include="Resources\layout\LogInLayout.axml">
       <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\Loging_In_Layout.axml">
+      <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>

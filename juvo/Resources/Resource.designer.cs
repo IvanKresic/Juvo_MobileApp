@@ -126,10 +126,13 @@ namespace juvo
 			public const int Activity_To_Do = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int LogInLayout = 2130903041;
+			public const int Loging_In_Layout = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int Row_List_To_Do = 2130903042;
+			public const int LogInLayout = 2130903042;
+			
+			// aapt resource value: 0x7f030003
+			public const int Row_List_To_Do = 2130903043;
 			
 			static Layout()
 			{
