@@ -4,7 +4,7 @@ namespace juvo.JuvoModel
 {
     public class Response
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }

@@ -1,20 +1,25 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
 using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using System.Collections.Generic;
 using juvo.JuvoModel;
 
 namespace juvo.JuvoClasses
 {
-    public class DangerEventsAdapter : BaseAdapter<Response>
+    class ListDangersAdapter : BaseAdapter<Response>
     {
-
         Activity activity;
         int layoutResourceId;
         List<Response> items = new List<Response>();
 
-        public DangerEventsAdapter(Activity activity, int layoutResourceId)
+        public ListDangersAdapter(Activity activity, int layoutResourceId)
         {
             this.activity = activity;
             this.layoutResourceId = layoutResourceId;

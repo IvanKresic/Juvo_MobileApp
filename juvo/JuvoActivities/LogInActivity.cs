@@ -18,7 +18,7 @@ namespace juvo.JuvoActivities
     public class LogInActivity : Activity
     {
 
-        const string applicationURL = @"https://juvohomefriend.azurewebsites.net/";
+        const string applicationURL = @"https://juvo.azurewebsites.net/";
 
         protected override void OnCreate(Bundle savedInstanceState)
         {

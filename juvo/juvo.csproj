@@ -87,11 +87,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JuvoActivities\DangerEventsActivity.cs" />
+    <Compile Include="JuvoActivities\ListDangersActivity.cs" />
     <Compile Include="JuvoActivities\LogInActivity.cs" />
     <Compile Include="JuvoActivities\MainActivity.cs" />
     <Compile Include="JuvoClasses\Constants.cs" />
     <Compile Include="JuvoClasses\DangerEvents.cs" />
     <Compile Include="JuvoClasses\DangerEventsAdapter.cs" />
+    <Compile Include="JuvoClasses\ListDangersAdapter.cs" />
     <Compile Include="JuvoClasses\LogInItem.cs" />
     <Compile Include="JuvoClasses\MyBroadcastReceiver.cs" />
     <Compile Include="JuvoModel\DangerEventsModel.cs" />

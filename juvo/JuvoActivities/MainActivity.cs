@@ -11,7 +11,7 @@ namespace juvo.JuvoActivities
     public class MainActivity : Activity
     {
         public static MainActivity instance;
-        const string applicationURL = @"https://juvohomefriend.azurewebsites.net/";
+        const string applicationURL = @"https://juvo.azurewebsites.net/";
 
         protected override void OnCreate(Bundle bundle)
         {

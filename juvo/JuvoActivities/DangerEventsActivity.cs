@@ -15,6 +15,7 @@ using System.Net.Http;
 using Android.Util;
 using Newtonsoft.Json;
 using juvo.JuvoModel;
+using Android.Content;
 
 namespace juvo.JuvoActivities
 {
@@ -35,11 +36,13 @@ namespace juvo.JuvoActivities
         //EditText containing the "New ToDo" text
         private EditText textNewToDo;
 
-        const string applicationURL = @"https://juvohomefriend.azurewebsites.net/";
+        const string applicationURL = @"https://juvo.azurewebsites.net/";
 
         const string localDbFilename = "localstore.db";
 
         List<Response> response = new List<Response>();
+        List<int> niz = new List<int>();
+        int[] myNiz;
 
 
         protected override async void OnCreate(Bundle savedInstanceState)
@@ -72,6 +75,7 @@ namespace juvo.JuvoActivities
             // Load the items from the Mobile Service
             OnRefreshItemsSelected();
 
+            listViewToDo.ItemClick += listView_ItemClick;
             // Create your application here
         }
 
@@ -116,7 +120,19 @@ namespace juvo.JuvoActivities
             return true;
         }
 
-        
+        //On list item click
+        void listView_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            //var incident = incidents[e.Position];
+            //Log.Info("NIZ", "" + niz[e.Position]);
+            foreach(int i in niz)
+            {
+                Log.Info("NIZ", "" + i);
+            }
+            var activity2 = new Intent(this, typeof(ListDangersActivity));
+            activity2.PutExtra("MyData", niz[e.Position]);
+            StartActivity(activity2);
+        }
 
         private async Task SyncAsync(bool pullData = false)
         {        
@@ -132,20 +148,29 @@ namespace juvo.JuvoActivities
                     mClient.DefaultRequestHeaders.Add("X-ZUMO-AUTH", Constants.token);
                     mClient.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
 
-                    var calcResult = await mClient.GetAsync(new Uri("http://juvohomefriend.azurewebsites.net/api/DangerEvents1/" + Constants.User_Id));
+                    var calcResult = await mClient.GetAsync(new Uri("http://juvo.azurewebsites.net/api/DangerEvents1/" + Constants.User_Id));
                     var temp = await calcResult.Content.ReadAsStringAsync();
                     //*******************************
 
                     var res = JsonConvert.DeserializeObject<List<UsersModel>>(temp);
+                    Log.Info("TAG",""+ temp);
+                    Constants.JSONresponse = res;
                     foreach (DevicesModel d in res[0].devices)
                     {
-                        foreach (DangerEventsModel events in d.DangerEvents)
-                        {
-                            Response response = new Response();
-                            response.Name = d.Name;
-                            response.Time = events.HappenedAt;
-                            adapter.Add(response);
-                        }
+                        Response response = new Response();
+                             response.Name = d.Name;
+                             response.Id = d.DevicesID;
+                        
+                        Log.Info("ID", "" + JsonConvert.SerializeObject(d));
+                             niz.Add(d.DevicesID);
+                             adapter.Add(response);
+                        // foreach (DangerEventsModel events in d.DangerEvents)
+                        // {
+                        //     Response response = new Response();
+                        //     response.Name = d.Name;
+                        //     response.Time = events.HappenedAt;
+                        //     adapter.Add(response);
+                        // }
                     }
                 }
             }

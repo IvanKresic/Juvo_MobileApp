@@ -5,7 +5,7 @@ namespace juvo.JuvoModel
 {
     public class DevicesModel
     {
-        [JsonProperty(PropertyName = "deviceId")]
+        [JsonProperty(PropertyName = "devicesId")]
         public int DevicesID { get; set; }
 
         [JsonProperty(PropertyName = "name")]
